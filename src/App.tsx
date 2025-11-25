@@ -38,7 +38,7 @@ function App() {
 				<h1 className="p-4 font-bold text-2xl">Project Analyzer</h1>
 				<Form control={form.control} />
 			</div>
-			<div className="flex-1 overflow-y-auto">
+			<div className="flex-1 overflow-y-auto bg-neutral-300">
 				<Output control={form.control} />
 			</div>
 		</form>

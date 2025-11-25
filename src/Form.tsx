@@ -58,7 +58,9 @@ export function Form({ control }: { control: Control<FormSchema> }) {
 			{fields.map((field, i) => (
 				<FieldSet key={field.id}>
 					<div className="flex items-center gap-2">
-						<FieldLegend className="me-auto">Project {i + 1}</FieldLegend>
+						<FieldLegend className="me-auto">
+							Project {String.fromCharCode(65 + i)}
+						</FieldLegend>
 						<Button
 							variant="outline"
 							onClick={() => move(i, i - 1)}
@@ -103,7 +105,7 @@ export function Form({ control }: { control: Control<FormSchema> }) {
 						<F control={control} name={`projects.${i}.annualCost`} />
 						<F control={control} name={`projects.${i}.annualSavings`} />
 					</FieldGroup>
-					<hr className="border-black" />
+					<hr className="-mx-4 my-4" />
 				</FieldSet>
 			))}
 			<Button

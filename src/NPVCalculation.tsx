@@ -26,9 +26,10 @@ export function NPVCalculation({
 			{!!projects.length && <h4>Results</h4>}
 			{projects.map((x, i) => (
 				<p key={i}>
-					<Lx>{`$NPV_{${i + 1}} = ${_npv(x, discountRate / 100).toFixed(
-						2,
-					)}$`}</Lx>
+					<Lx>{`$NPV_{${String.fromCharCode(65 + i)}} = ${_npv(
+						x,
+						discountRate / 100,
+					).toFixed(2)}$`}</Lx>
 				</p>
 			))}
 		</>

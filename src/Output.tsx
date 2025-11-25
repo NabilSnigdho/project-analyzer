@@ -18,9 +18,15 @@ export function Output({ control }: { control: Control<FormSchema> }) {
 
 	return (
 		<div className="space-y-4 p-4">
-			<h2 className="font-bold text-xl">Output</h2>
+			<div className="flex items-center gap-4">
+				<h2 className="me-auto font-bold text-xl">Output</h2>
+				<Button onClick={reactToPrintFn}>
+					<PrinterIcon />
+					Print Output
+				</Button>
+			</div>
 			<div
-				className="prose lg:prose-xl max-w-full border p-16"
+				className="prose lg:prose-xl max-w-full border bg-white p-16 shadow"
 				ref={contentRef}
 			>
 				<NPVCalculation projects={projects} discountRate={discountRate} />
@@ -28,10 +34,6 @@ export function Output({ control }: { control: Control<FormSchema> }) {
 					<IncrementalAnalysis projectA={projects[0]} projectB={projects[1]} />
 				)}
 			</div>
-			<Button onClick={reactToPrintFn}>
-				<PrinterIcon />
-				Print Output
-			</Button>
 		</div>
 	);
 }
