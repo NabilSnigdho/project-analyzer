@@ -48,7 +48,7 @@ export default function splitAtDelimiters(
 	const data = [];
 
 	const regexLeft = new RegExp(
-		"(" + delimiters.map((x) => escapeRegex(x.left)).join("|") + ")",
+		`(${delimiters.map((x) => escapeRegex(x.left)).join("|")})`,
 	);
 
 	while (true) {

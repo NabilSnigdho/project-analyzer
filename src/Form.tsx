@@ -12,14 +12,17 @@ import {
 	FieldSet,
 } from "./components/ui/field";
 import { Input } from "./components/ui/input";
+import Lx from "./react-latex-next";
 import type { FormSchema } from "./schema";
 
 function F({
 	control,
 	name,
+	symbol,
 }: {
 	control: Control<FormSchema>;
 	name: FieldPath<FormSchema>;
+	symbol?: string;
 }) {
 	return (
 		<Controller
@@ -29,6 +32,7 @@ function F({
 				<Field data-invalid={fieldState.invalid}>
 					<FieldLabel htmlFor={field.name}>
 						{sentenceCase(name.split(".").pop() || name)}
+						{symbol && <Lx>{symbol}</Lx>}
 					</FieldLabel>
 					<Input
 						/** biome-ignore lint/suspicious/noExplicitAny: it's fine */
@@ -84,12 +88,20 @@ export function Form({ control }: { control: Control<FormSchema> }) {
 						</Button>
 					</div>
 					<FieldGroup className="grid grid-cols-3 gap-4">
-						<F control={control} name={`projects.${i}.initialCost`} />
-						<F control={control} name={`projects.${i}.annualCost`} />
+						<F
+							control={control}
+							name={`projects.${i}.initialCost`}
+							symbol="$C_0$"
+						/>
+						<F control={control} name={`projects.${i}.lifeSpan`} symbol="$n$" />
+						<F
+							control={control}
+							name={`projects.${i}.salvageValue`}
+							symbol="$S$"
+						/>
 						<F control={control} name={`projects.${i}.annualRevenue`} />
+						<F control={control} name={`projects.${i}.annualCost`} />
 						<F control={control} name={`projects.${i}.annualSavings`} />
-						<F control={control} name={`projects.${i}.salvageValue`} />
-						<F control={control} name={`projects.${i}.lifeSpan`} />
 					</FieldGroup>
 					<hr className="border-black" />
 				</FieldSet>
