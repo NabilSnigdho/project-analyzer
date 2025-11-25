@@ -1,35 +1,39 @@
-import { getDefaultStore, useAtomValue } from "jotai";
+import "katex/dist/katex.min.css";
 import { PrinterIcon } from "lucide-react";
 import { useRef } from "react";
+import { type Control, useWatch } from "react-hook-form";
+import Lx from "react-latex-next";
 import { useReactToPrint } from "react-to-print";
 import { Button } from "./components/ui/button";
-import { formStore, projectParams } from "./store";
+import type { FormSchema, ProjectSchema } from "./schema";
 
-export function Output() {
-	const aValues = Object.fromEntries(
-		// biome-ignore lint/correctness/useHookAtTopLevel: projectParams is static
-		projectParams.map((x) => [x, useAtomValue(formStore.projectA[x])]),
-	) as Record<(typeof projectParams)[number], number>;
-	const bValues = Object.fromEntries(
-		// biome-ignore lint/correctness/useHookAtTopLevel: projectParams is static
-		projectParams.map((x) => [x, useAtomValue(formStore.projectB[x])]),
-	) as Record<(typeof projectParams)[number], number>;
-
+export function Output({ control }: { control: Control<FormSchema> }) {
 	const contentRef = useRef<HTMLDivElement>(null);
 	const reactToPrintFn = useReactToPrint({ contentRef });
+	const projects = useWatch({
+		name: "projects",
+		control,
+	});
 
 	return (
-		<div className="space-y-4">
-			<h2 className="p-4 font-bold text-xl">Output</h2>
-			<div className="space-y-4 p-4" ref={contentRef}>
+		<div className="space-y-4 p-4">
+			<h2 className="font-bold text-xl">Output</h2>
+			<div className="space-y-4 border p-16" ref={contentRef}>
 				<p>
-					Net Present Value (NPV) of <b>Project A = </b>$
-					<i>{npv(aValues).toFixed(2)}</i>
+					We calculate the Net Present Value (NPV) for the projects using the
+					formula:
+					<Lx>
+						{
+							"$$NPV = -C_0 + \\sum_{t=1}^{n} \\frac{A_t}{(1+r)^t} + \\frac{S_n}{(1+r)^n}$$"
+						}
+					</Lx>
 				</p>
-				<p>
-					Net Present Value (NPV) of <b>Project B = </b>$
-					<i>{npv(bValues).toFixed(2)}</i>
-				</p>
+				{projects.map((x, i) => (
+					// biome-ignore lint/suspicious/noArrayIndexKey: is fine
+					<p key={i}>
+						<Lx>{`$NPV_{${i + 1}} = ${_npv(x, 0.1).toFixed(2)}$`}</Lx>
+					</p>
+				))}
 			</div>
 			<Button onClick={reactToPrintFn}>
 				<PrinterIcon />
@@ -39,13 +43,13 @@ export function Output() {
 	);
 }
 
-const npv = (x: Record<(typeof projectParams)[number], number>) => {
-	const r = getDefaultStore().get(formStore.interestRate) / 100;
+const _npv = (x: ProjectSchema, r: number) => {
 	const A = x.annualRevenue - x.annualCost + x.annualSavings;
+	const n = x.lifeSpan;
 
 	return (
 		-x.initialCost +
-		A * ((1 - (1 + r) ** -x.lifeSpan) / r) +
-		x.salvageValue * (1 + r) ** -x.lifeSpan
+		(A * (1 - (1 + r) ** -n)) / r +
+		x.salvageValue * (1 + r) ** -n
 	);
 };

@@ -1,4 +1,8 @@
 {
-	"cSpell.words": ["biomejs"],
-	"editor.tabSize": 2
+	"cSpell.words": ["biomejs", "katex"],
+	"editor.tabSize": 2,
+	"editor.codeActionsOnSave": {
+		"source.organizeImports.biome": "explicit",
+		"source.fixAll.biome": "explicit"
+	}
 }
