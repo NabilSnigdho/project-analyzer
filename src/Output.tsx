@@ -2,9 +2,9 @@ import "katex/dist/katex.min.css";
 import { PrinterIcon } from "lucide-react";
 import { useRef } from "react";
 import { type Control, useWatch } from "react-hook-form";
-import Lx from "react-latex-next";
 import { useReactToPrint } from "react-to-print";
 import { Button } from "./components/ui/button";
+import Lx from "./react-latex-next";
 import type { FormSchema, ProjectSchema } from "./schema";
 
 export function Output({ control }: { control: Control<FormSchema> }) {
