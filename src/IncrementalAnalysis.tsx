@@ -32,7 +32,11 @@ interface CashFlowRow {
 }
 
 const withPlusSign = (value: number): string =>
-	value < 0 ? value.toLocaleString() : `+${value.toLocaleString()}`;
+	value === 0
+		? "0"
+		: value < 0
+			? value.toLocaleString()
+			: `+${value.toLocaleString()}`;
 
 export const IncrementalAnalysis: React.FC<Props> = ({
 	projectA,
@@ -49,7 +53,17 @@ export const IncrementalAnalysis: React.FC<Props> = ({
 	const formatCashFlow = (values: number[]): string => {
 		if (values.length === 0) return "0";
 		if (values.length === 1) return withPlusSign(values[0]);
-		return values.map((v) => v.toLocaleString()).join(" + ");
+		return values
+			.filter((x) => x !== 0)
+			.reduce(
+				(acc, val) =>
+					acc === ""
+						? withPlusSign(val)
+						: val < 0
+							? acc + " - " + Math.abs(val).toLocaleString()
+							: acc + " + " + val.toLocaleString(),
+				"",
+			);
 	};
 
 	const evaluateCashFlow = (expression: string): number => {
@@ -169,30 +183,6 @@ export const IncrementalAnalysis: React.FC<Props> = ({
 			}
 
 			rate = newRate;
-		}
-
-		{
-			const maxIterations = 1000000;
-			const tolerance = 0.001;
-			let rate = 0.1; // Initial guess
-
-			for (let i = 0; i < maxIterations; i++) {
-				let npv = 0;
-				let dnpv = 0;
-
-				for (let t = 0; t < cashFlows.length; t++) {
-					npv += cashFlows[t] / (1 + rate) ** t;
-					dnpv -= (t * cashFlows[t]) / (1 + rate) ** (t + 1);
-				}
-
-				const newRate = rate - npv / dnpv;
-
-				if (Math.abs(newRate - rate) < tolerance) {
-					return newRate * 100; // Return as percentage
-				}
-
-				rate = newRate;
-			}
 		}
 
 		return null; // Could not converge

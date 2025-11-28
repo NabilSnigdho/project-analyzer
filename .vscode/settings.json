@@ -1,5 +1,5 @@
 {
-	"cSpell.words": ["biomejs", "katex"],
+	"cSpell.words": ["biomejs", "katex", "Raphson"],
 	"editor.tabSize": 2,
 	"editor.codeActionsOnSave": {
 		"source.organizeImports.biome": "explicit",
