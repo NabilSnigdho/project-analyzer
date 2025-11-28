@@ -171,6 +171,30 @@ export const IncrementalAnalysis: React.FC<Props> = ({
 			rate = newRate;
 		}
 
+		{
+			const maxIterations = 1000000;
+			const tolerance = 0.001;
+			let rate = 0.1; // Initial guess
+
+			for (let i = 0; i < maxIterations; i++) {
+				let npv = 0;
+				let dnpv = 0;
+
+				for (let t = 0; t < cashFlows.length; t++) {
+					npv += cashFlows[t] / (1 + rate) ** t;
+					dnpv -= (t * cashFlows[t]) / (1 + rate) ** (t + 1);
+				}
+
+				const newRate = rate - npv / dnpv;
+
+				if (Math.abs(newRate - rate) < tolerance) {
+					return newRate * 100; // Return as percentage
+				}
+
+				rate = newRate;
+			}
+		}
+
 		return null; // Could not converge
 	};
 
